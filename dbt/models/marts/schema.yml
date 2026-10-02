@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: fct_charging_sessions
+    description: One row per session with outcome flags (request met, overstayed).
+    columns:
+      - name: session_id
+        tests: [not_null, unique]
+
+  - name: dim_stations
+    description: One row per charging station.
+    columns:
+      - name: station_id
+        tests: [not_null, unique]
+
+  - name: agg_daily_site
+    description: Daily sessions, energy, users, durations and service levels per site.
+    tests:
+      - expression_is_true:
+          arguments:
+            expression: "sessions > 0 and energy_kwh >= 0"
+    columns:
+      - name: share_requests_met
+        tests:
+          - between:
+              arguments: {min_value: 0, max_value: 1}
+
+  - name: agg_station_utilization
+    description: Occupied, charging and idle shares of time per station.
+    columns:
+      - name: station_id
+        tests: [not_null, unique]
+      - name: occupied_share
+        tests:
+          - between:
+              arguments: {min_value: 0, max_value: 1}
+    tests:
+      - expression_is_true:
+          arguments:
+            expression: "charging_share <= occupied_share + 1e-9"
+
+  - name: fct_site_load_15min
+    description: Site power demand per 15-minute interval.
+    columns:
+      - name: power_kw
+        tests: [not_null, non_negative]
+      - name: charging_sessions
+        tests: [non_negative]
