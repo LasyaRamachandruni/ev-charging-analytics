@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ev-charging-analytics"
 version = "0.1.0"
-description = "Batch pipeline and analytics for EV charging sessions (Caltech ACN-Data): ingestion, dbt models on DuckDB, data-quality checks and reporting."
+description = "Analytics platform for EV charging sessions (Caltech ACN-Data): ingestion, dbt models on DuckDB, data-quality checks, a Postgres-backed REST API and a React web app."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -19,7 +19,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+serve = ["fastapi>=0.110", "uvicorn>=0.29", "psycopg[binary,pool]>=3.1"]
+dev = ["pytest>=8", "httpx>=0.27", "fastapi>=0.110", "uvicorn>=0.29", "psycopg[binary,pool]>=3.1"]
 
 [project.scripts]
 evcharge = "evcharge.cli:main"

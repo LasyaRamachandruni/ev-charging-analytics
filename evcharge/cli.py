@@ -7,6 +7,9 @@
     evcharge run                                                       # ingest + transform + report
 
     evcharge run --synthetic   # generate synthetic data first (no token needed)
+
+    evcharge publish --dsn postgresql://...   # copy the marts into Postgres for the API
+    evcharge serve                            # API + web app (Postgres if EVCHARGE_PG_DSN is set)
 """
 
 from __future__ import annotations
@@ -85,6 +88,31 @@ def cmd_run(args) -> int:
     return 0
 
 
+def _dsn(args) -> str:
+    dsn = args.dsn or os.environ.get("EVCHARGE_PG_DSN")
+    if not dsn:
+        sys.exit("pass --dsn or set EVCHARGE_PG_DSN")
+    return dsn
+
+
+def cmd_publish(args) -> int:
+    from .serving.publish import publish
+
+    _, _, warehouse = _paths(args)
+    stats = publish(warehouse, _dsn(args))
+    print(f"published {sum(stats.tables.values())} rows in {len(stats.tables)} tables in {stats.seconds}s")
+    return 0
+
+
+def cmd_serve(args) -> int:
+    import uvicorn
+
+    _, _, warehouse = _paths(args)
+    os.environ.setdefault("EVCHARGE_WAREHOUSE", str(warehouse))
+    uvicorn.run("evcharge.api:app", host=args.host, port=args.port)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="evcharge", description="EV charging session pipeline")
     p.add_argument("--data-dir", default="data", help="where raw/, bronze/ and the warehouse live")
@@ -123,6 +151,15 @@ def main(argv: list[str] | None = None) -> int:
     synth_args(run)
     report_args(run)
     run.set_defaults(fn=cmd_run)
+
+    pub = sub.add_parser("publish", help="copy the marts from DuckDB into Postgres")
+    pub.add_argument("--dsn", help="Postgres connection string (default: $EVCHARGE_PG_DSN)")
+    pub.set_defaults(fn=cmd_publish)
+
+    sv = sub.add_parser("serve", help="run the API and web app")
+    sv.add_argument("--host", default="127.0.0.1")
+    sv.add_argument("--port", type=int, default=8000)
+    sv.set_defaults(fn=cmd_serve)
 
     args = p.parse_args(argv)
     return args.fn(args)
