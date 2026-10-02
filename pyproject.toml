@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ev-charging-analytics"
+version = "0.1.0"
+description = "Batch pipeline and analytics for EV charging sessions (Caltech ACN-Data): ingestion, dbt models on DuckDB, data-quality checks and reporting."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "duckdb>=1.0",
+  "pandas>=2.0",
+  "pyarrow>=14",
+  "requests>=2.31",
+  "dbt-duckdb>=1.8",
+  "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+evcharge = "evcharge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["evcharge*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
