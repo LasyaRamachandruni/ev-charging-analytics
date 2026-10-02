@@ -151,3 +151,14 @@ def _rounded(x):
     if isinstance(x, str) and x.endswith("Z"):  # timestamps serialize as ...Z
         return x
     return x
+
+
+@pg
+def test_bench_versions_return_the_same_page(warehouse, tmp_path):
+    from evcharge.bench import run
+    from evcharge.serving.publish import publish
+
+    publish(warehouse, PG_DSN)
+    report = run(PG_DSN, sites=2, years=3, runs=3, page=5, out=tmp_path / "bench.json")  # asserts the four pages agree
+    assert set(report["results"]) == {"naive", "index", "sargable", "keyset"}
+    assert "Index Scan using sessions_site_time" in report["results"]["keyset"]["plan"]
