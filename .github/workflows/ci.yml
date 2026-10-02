@@ -8,6 +8,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ev
+          POSTGRES_PASSWORD: ev
+          POSTGRES_DB: ev
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ev" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      EVCHARGE_TEST_PG_DSN: postgresql://ev:ev@localhost:5432/ev
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -16,7 +28,42 @@ jobs:
           cache: pip
       - name: Install
         run: pip install -e ".[dev]"
-      - name: Unit and pipeline tests (includes dbt build with data tests)
+      - name: Unit, pipeline, API and Postgres tests (includes dbt build with data tests)
         run: pytest -q
-      - name: Run the pipeline on synthetic data
-        run: evcharge --data-dir /tmp/ev run --synthetic --inject-issues --out /tmp/ev/results
+      - name: Run the pipeline on synthetic data and publish to Postgres
+        run: |
+          evcharge --data-dir /tmp/ev run --synthetic --inject-issues --out /tmp/ev/results
+          evcharge --data-dir /tmp/ev publish --dsn "$EVCHARGE_TEST_PG_DSN"
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: pip install -e "..[serve]"
+      - run: npm ci
+      - name: API types match the backend
+        run: |
+          evcharge openapi --out openapi.json
+          npm run gen:api
+          git diff --exit-code -- openapi.json src/api/schema.ts
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t ev-charging-analytics .
