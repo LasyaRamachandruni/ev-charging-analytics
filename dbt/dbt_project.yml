@@ -1,0 +1,23 @@
+name: ev_charging
+version: "0.1.0"
+config-version: 2
+profile: ev_charging
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # a session counts as "met" if it delivered at least this share of what the driver asked for
+  request_met_threshold: 0.95
+  # idle time after charging finished beyond this many hours counts as overstay
+  overstay_hours: 2
+
+models:
+  ev_charging:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

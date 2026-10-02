@@ -13,7 +13,8 @@ dependencies = [
   "pandas>=2.0",
   "pyarrow>=14",
   "requests>=2.31",
-  "dbt-duckdb>=1.8",
+  "dbt-core>=1.10",
+  "dbt-duckdb>=1.9",
   "matplotlib>=3.7",
 ]
 

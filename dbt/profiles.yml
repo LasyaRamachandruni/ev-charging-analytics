@@ -1,0 +1,10 @@
+# Paths are relative to this dbt/ folder; override with EVCHARGE_WAREHOUSE / EVCHARGE_BRONZE.
+ev_charging:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('EVCHARGE_WAREHOUSE', '../data/warehouse.duckdb') }}"
+      threads: 4
+      settings:
+        TimeZone: UTC

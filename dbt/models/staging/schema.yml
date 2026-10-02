@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_sessions
+    description: Cleaned sessions with durations, local times and request fields.
+    columns:
+      - name: session_id
+        tests: [not_null, unique]
+      - name: station_id
+        tests: [not_null]
+      - name: kwh_delivered
+        tests: [not_null, non_negative]
+      - name: connected_hours
+        tests:
+          - not_null
+          - between:
+              arguments: {min_value: 0, max_value: 72}
+      - name: idle_hours
+        description: Time plugged in after charging finished.
+        tests: [non_negative]
+      - name: request_fulfillment
+        tests:
+          - between:
+              arguments: {min_value: 0, max_value: 1}
+    tests:
+      - expression_is_true:
+          arguments:
+            expression: "charging_hours <= connected_hours + 1e-9"

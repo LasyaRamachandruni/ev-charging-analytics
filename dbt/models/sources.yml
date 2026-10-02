@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: Validated, deduplicated sessions written by `evcharge ingest`.
+    meta:
+      external_location: "read_parquet('{{ env_var('EVCHARGE_BRONZE', '../data/bronze') }}/{name}/*.parquet')"
+    tables:
+      - name: sessions
+        description: One row per charging session, timestamps in UTC.
+        columns:
+          - name: session_id
+            tests: [not_null, unique]
