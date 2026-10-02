@@ -1,0 +1,9 @@
+.git
+data
+results
+web/node_modules
+web/dist
+**/__pycache__
+dbt/target
+dbt/logs
+*.duckdb

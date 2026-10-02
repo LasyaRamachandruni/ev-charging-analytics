@@ -24,7 +24,7 @@ from pydantic import BaseModel
 
 from .serving.store import DuckDBStore, NotFound, PostgresStore, Store
 
-WEB_DIST = Path(__file__).resolve().parent.parent / "web" / "dist"
+WEB_DIST = Path(os.environ.get("EVCHARGE_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
 
 
 # -- response models -------------------------------------------------------
