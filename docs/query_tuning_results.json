@@ -1,0 +1,41 @@
+{
+  "postgres": "PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu",
+  "base_sessions": "4706",
+  "rows": "2917720",
+  "table_size": "447 MB",
+  "sites": "20",
+  "first": "2019-01-07",
+  "last": "2029-03-14",
+  "index_size": "239 MB",
+  "request": {
+    "site": "site_007",
+    "start": "2028-02-14",
+    "end": "2029-02-12",
+    "matching_sessions": 14341,
+    "page": 200,
+    "page_size": 50
+  },
+  "runs": 30,
+  "results": {
+    "naive": {
+      "median_ms": 248.58,
+      "p95_ms": 291.71,
+      "plan": "Limit (actual rows=50 loops=1)\n  Buffers: shared hit=3200 read=54016\n  ->  Sort (actual rows=10000 loops=1)\n        Sort Key: connected_at_utc DESC, session_id DESC\n        Sort Method: quicksort  Memory: 3336kB\n        Buffers: shared hit=3200 read=54016\n        ->  Seq Scan on sessions (actual rows=14341 loops=1)\n              Filter: ((site = 'site_007'::text) AND ((connected_at_local)::date >= '2028-02-14'::date) AND ((connected_at_local)::date <= '2029-02-12'::date))\n              Rows Removed by Filter: 2903379\n              Buffers: shared hit=3200 read=54016"
+    },
+    "index": {
+      "median_ms": 31.43,
+      "p95_ms": 32.82,
+      "plan": "Limit (actual rows=50 loops=1)\n  Buffers: shared hit=9029\n  ->  Sort (actual rows=10000 loops=1)\n        Sort Key: connected_at_utc DESC, session_id DESC\n        Sort Method: quicksort  Memory: 3336kB\n        Buffers: shared hit=9029\n        ->  Bitmap Heap Scan on sessions (actual rows=14341 loops=1)\n              Recheck Cond: (site = 'site_007'::text)\n              Filter: (((connected_at_local)::date >= '2028-02-14'::date) AND ((connected_at_local)::date <= '2029-02-12'::date))\n              Rows Removed by Filter: 131545\n              Heap Blocks: exact=7505\n              Buffers: shared hit=9029\n              ->  Bitmap Index Scan on sessions_site_time (actual rows=145886 loops=1)\n                    Index Cond: (site = 'site_007'::text)\n                    Buffers: shared hit=1524"
+    },
+    "sargable": {
+      "median_ms": 8.94,
+      "p95_ms": 9.31,
+      "plan": "Limit (actual rows=50 loops=1)\n  Buffers: shared hit=5080\n  ->  Sort (actual rows=10000 loops=1)\n        Sort Key: connected_at_utc DESC, session_id DESC\n        Sort Method: quicksort  Memory: 3336kB\n        Buffers: shared hit=5080\n        ->  Bitmap Heap Scan on sessions (actual rows=14341 loops=1)\n              Recheck Cond: ((site = 'site_007'::text) AND (connected_at_utc >= '2028-02-14 08:00:00+00'::timestamp with time zone) AND (connected_at_utc < '2029-02-13 08:00:00+00'::timestamp with time zone))\n              Heap Blocks: exact=4926\n              Buffers: shared hit=5080\n              ->  Bitmap Index Scan on sessions_site_time (actual rows=14341 loops=1)\n                    Index Cond: ((site = 'site_007'::text) AND (connected_at_utc >= '2028-02-14 08:00:00+00'::timestamp with time zone) AND (connected_at_utc < '2029-02-13 08:00:00+00'::timestamp with time zone))\n                    Buffers: shared hit=154"
+    },
+    "keyset": {
+      "median_ms": 0.23,
+      "p95_ms": 0.43,
+      "plan": "Limit (actual rows=50 loops=1)\n  Buffers: shared hit=55\n  ->  Index Scan using sessions_site_time on sessions (actual rows=50 loops=1)\n        Index Cond: ((site = 'site_007'::text) AND (connected_at_utc >= '2028-02-14 08:00:00+00'::timestamp with time zone) AND (connected_at_utc < '2029-02-13 08:00:00+00'::timestamp with time zone) AND (ROW(connected_at_utc, session_id) < ROW('2028-06-05 14:35:46+00'::timestamp with time zone, '2_39_78_312_2019-03-25 14:35:46-7-28'::text)))\n        Buffers: shared hit=55"
+    }
+  }
+}
