@@ -113,6 +113,16 @@ def cmd_serve(args) -> int:
     return 0
 
 
+def cmd_bench(args) -> int:
+    from .bench import run
+
+    report = run(_dsn(args), sites=args.sites, years=args.years, runs=args.runs, out=args.out)
+    print(f"{report['rows']} rows ({report['table_size']}); request matches {report['request']['matching_sessions']} sessions")
+    for name, r in report["results"].items():
+        print(f"  {name:9s} median {r['median_ms']:8.2f} ms   p95 {r['p95_ms']:8.2f} ms")
+    return 0
+
+
 def cmd_openapi(args) -> int:
     import json
 
@@ -174,6 +184,14 @@ def main(argv: list[str] | None = None) -> int:
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8000)
     sv.set_defaults(fn=cmd_serve)
+
+    b = sub.add_parser("bench", help="benchmark the session-log query on a scaled-up copy in Postgres")
+    b.add_argument("--dsn", help="Postgres connection string (default: $EVCHARGE_PG_DSN)")
+    b.add_argument("--sites", type=int, default=20)
+    b.add_argument("--years", type=int, default=10)
+    b.add_argument("--runs", type=int, default=30)
+    b.add_argument("--out", default="docs/query_tuning_results.json")
+    b.set_defaults(fn=cmd_bench)
 
     oa = sub.add_parser("openapi", help="write the API schema (the web app's types are generated from it)")
     oa.add_argument("--out", default="web/openapi.json")
