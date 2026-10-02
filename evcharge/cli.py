@@ -113,6 +113,20 @@ def cmd_serve(args) -> int:
     return 0
 
 
+def cmd_openapi(args) -> int:
+    import json
+
+    from fastapi.openapi.utils import get_openapi
+
+    from .api import create_app
+
+    app = create_app(store=object())  # the schema doesn't need a database
+    spec = get_openapi(title=app.title, version=app.version, routes=app.routes)
+    Path(args.out).write_text(json.dumps(spec, indent=2) + "\n")
+    print(f"wrote {args.out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="evcharge", description="EV charging session pipeline")
     p.add_argument("--data-dir", default="data", help="where raw/, bronze/ and the warehouse live")
@@ -160,6 +174,10 @@ def main(argv: list[str] | None = None) -> int:
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8000)
     sv.set_defaults(fn=cmd_serve)
+
+    oa = sub.add_parser("openapi", help="write the API schema (the web app's types are generated from it)")
+    oa.add_argument("--out", default="web/openapi.json")
+    oa.set_defaults(fn=cmd_openapi)
 
     args = p.parse_args(argv)
     return args.fn(args)

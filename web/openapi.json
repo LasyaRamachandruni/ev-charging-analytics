@@ -1,0 +1,1023 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EV Charging Analytics API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites": {
+      "get": {
+        "summary": "Sites",
+        "operationId": "sites_api_sites_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Site"
+                  },
+                  "type": "array",
+                  "title": "Response Sites Api Sites Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{site}/summary": {
+      "get": {
+        "summary": "Summary",
+        "operationId": "summary_api_sites__site__summary_get",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Site"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Summary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{site}/daily": {
+      "get": {
+        "summary": "Daily",
+        "operationId": "daily_api_sites__site__daily_get",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Site"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DailyRow"
+                  },
+                  "title": "Response Daily Api Sites  Site  Daily Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{site}/load-profile": {
+      "get": {
+        "summary": "Load Profile",
+        "operationId": "load_profile_api_sites__site__load_profile_get",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Site"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadProfile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{site}/stations": {
+      "get": {
+        "summary": "Stations",
+        "operationId": "stations_api_sites__site__stations_get",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Site"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Station"
+                  },
+                  "title": "Response Stations Api Sites  Site  Stations Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{site}/sessions": {
+      "get": {
+        "summary": "Sessions",
+        "operationId": "sessions_api_sites__site__sessions_get",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Site"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          },
+          {
+            "name": "station",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Station"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DailyRow": {
+        "properties": {
+          "local_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Local Date"
+          },
+          "is_weekend": {
+            "type": "boolean",
+            "title": "Is Weekend"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "identified_users": {
+            "type": "integer",
+            "title": "Identified Users"
+          },
+          "energy_kwh": {
+            "type": "number",
+            "title": "Energy Kwh"
+          },
+          "avg_connected_hours": {
+            "type": "number",
+            "title": "Avg Connected Hours"
+          },
+          "avg_idle_hours": {
+            "type": "number",
+            "title": "Avg Idle Hours"
+          },
+          "share_requests_met": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share Requests Met"
+          },
+          "share_overstayed": {
+            "type": "number",
+            "title": "Share Overstayed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "local_date",
+          "is_weekend",
+          "sessions",
+          "identified_users",
+          "energy_kwh",
+          "avg_connected_hours",
+          "avg_idle_hours",
+          "share_requests_met",
+          "share_overstayed"
+        ],
+        "title": "DailyRow"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "backend": {
+            "type": "string",
+            "title": "Backend"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "backend"
+        ],
+        "title": "Health"
+      },
+      "LoadProfile": {
+        "properties": {
+          "site": {
+            "type": "string",
+            "title": "Site"
+          },
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "weekdays": {
+            "type": "integer",
+            "title": "Weekdays"
+          },
+          "weekend_days": {
+            "type": "integer",
+            "title": "Weekend Days"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/LoadSlot"
+            },
+            "type": "array",
+            "title": "Slots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "site",
+          "start",
+          "end",
+          "weekdays",
+          "weekend_days",
+          "slots"
+        ],
+        "title": "LoadProfile"
+      },
+      "LoadSlot": {
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "title": "Slot"
+          },
+          "time": {
+            "type": "string",
+            "title": "Time"
+          },
+          "weekday_avg_kw": {
+            "type": "number",
+            "title": "Weekday Avg Kw"
+          },
+          "weekday_max_kw": {
+            "type": "number",
+            "title": "Weekday Max Kw"
+          },
+          "weekend_avg_kw": {
+            "type": "number",
+            "title": "Weekend Avg Kw"
+          },
+          "weekend_max_kw": {
+            "type": "number",
+            "title": "Weekend Max Kw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slot",
+          "time",
+          "weekday_avg_kw",
+          "weekday_max_kw",
+          "weekend_avg_kw",
+          "weekend_max_kw"
+        ],
+        "title": "LoadSlot"
+      },
+      "Session": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "station_id": {
+            "type": "string",
+            "title": "Station Id"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          },
+          "connected_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Connected At Utc"
+          },
+          "connected_at_local": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Connected At Local"
+          },
+          "disconnected_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Disconnected At Utc"
+          },
+          "connected_hours": {
+            "type": "number",
+            "title": "Connected Hours"
+          },
+          "charging_hours": {
+            "type": "number",
+            "title": "Charging Hours"
+          },
+          "idle_hours": {
+            "type": "number",
+            "title": "Idle Hours"
+          },
+          "kwh_delivered": {
+            "type": "number",
+            "title": "Kwh Delivered"
+          },
+          "kwh_requested": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kwh Requested"
+          },
+          "request_met": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Met"
+          },
+          "overstayed": {
+            "type": "boolean",
+            "title": "Overstayed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_id",
+          "station_id",
+          "user_id",
+          "connected_at_utc",
+          "connected_at_local",
+          "disconnected_at_utc",
+          "connected_hours",
+          "charging_hours",
+          "idle_hours",
+          "kwh_delivered",
+          "kwh_requested",
+          "request_met",
+          "overstayed"
+        ],
+        "title": "Session"
+      },
+      "SessionPage": {
+        "properties": {
+          "site": {
+            "type": "string",
+            "title": "Site"
+          },
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "site",
+          "start",
+          "end",
+          "items",
+          "next_cursor"
+        ],
+        "title": "SessionPage"
+      },
+      "Site": {
+        "properties": {
+          "site": {
+            "type": "string",
+            "title": "Site"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
+          },
+          "first_date": {
+            "type": "string",
+            "format": "date",
+            "title": "First Date"
+          },
+          "last_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Last Date"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "stations": {
+            "type": "integer",
+            "title": "Stations"
+          },
+          "energy_kwh": {
+            "type": "number",
+            "title": "Energy Kwh"
+          }
+        },
+        "type": "object",
+        "required": [
+          "site",
+          "timezone",
+          "first_date",
+          "last_date",
+          "sessions",
+          "stations",
+          "energy_kwh"
+        ],
+        "title": "Site"
+      },
+      "Station": {
+        "properties": {
+          "station_id": {
+            "type": "string",
+            "title": "Station Id"
+          },
+          "space_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Space Id"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "total_kwh": {
+            "type": "number",
+            "title": "Total Kwh"
+          },
+          "occupied_share": {
+            "type": "number",
+            "title": "Occupied Share"
+          },
+          "charging_share": {
+            "type": "number",
+            "title": "Charging Share"
+          },
+          "idle_share_of_occupied": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idle Share Of Occupied"
+          },
+          "first_session_date": {
+            "type": "string",
+            "format": "date",
+            "title": "First Session Date"
+          },
+          "last_session_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Last Session Date"
+          }
+        },
+        "type": "object",
+        "required": [
+          "station_id",
+          "space_id",
+          "sessions",
+          "total_kwh",
+          "occupied_share",
+          "charging_share",
+          "idle_share_of_occupied",
+          "first_session_date",
+          "last_session_date"
+        ],
+        "title": "Station"
+      },
+      "Summary": {
+        "properties": {
+          "site": {
+            "type": "string",
+            "title": "Site"
+          },
+          "start": {
+            "type": "string",
+            "format": "date",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date",
+            "title": "End"
+          },
+          "days": {
+            "type": "integer",
+            "title": "Days"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "identified_users": {
+            "type": "integer",
+            "title": "Identified Users"
+          },
+          "energy_kwh": {
+            "type": "number",
+            "title": "Energy Kwh"
+          },
+          "avg_connected_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Connected Hours"
+          },
+          "avg_idle_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Idle Hours"
+          },
+          "share_requests_met": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share Requests Met"
+          },
+          "share_overstayed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share Overstayed"
+          },
+          "peak_kw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peak Kw"
+          },
+          "peak_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peak At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "site",
+          "start",
+          "end",
+          "days",
+          "sessions",
+          "identified_users",
+          "energy_kwh",
+          "avg_connected_hours",
+          "avg_idle_hours",
+          "share_requests_met",
+          "share_overstayed",
+          "peak_kw",
+          "peak_at"
+        ],
+        "title": "Summary"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
